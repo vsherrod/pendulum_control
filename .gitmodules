@@ -1,0 +1,3 @@
+[submodule "ros_ws/src/gazebo_ros_demos"]
+	path = ros_ws/src/gazebo_ros_demos
+	url = https://github.com/ros-simulation/gazebo_ros_demos.git
