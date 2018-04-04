@@ -1,0 +1,54 @@
+# Produced by CVXGEN, 2018-04-04 16:56:48 -0400.
+# CVXGEN is Copyright (C) 2006-2017 Jacob Mattingley, jem@cvxgen.com.
+# The code in this file is Copyright (C) 2006-2017 Jacob Mattingley.
+# CVXGEN, or solvers produced by CVXGEN, cannot be used for commercial
+# applications without prior written permission from Jacob Mattingley.
+
+# Filename: description.cvxgen.
+# Description: A description of the CVXGEN problem.
+
+dimensions
+  m = 2 # number of inputs
+  n = 4 # number of states
+  T = 20 # time horizon
+
+end
+
+parameters
+  A(n,n)
+  B(n,m)
+
+  Q1(1,1) diagonal psd # error cost on joint 1
+  Q2(1,1) diagonal psd # error cost on joint 2
+  Q3(m,m) diagonal psd # difference in input cost
+  R1 (1,1) diagonal psd # velocity cost, the parts multiplying position need to be zero
+  R2 (1,1) diagonal psd # final position cost, the parts multiplying velocity need to be zero
+
+  q[0](n) #current
+  q_goal (n) #angle goals
+  q_max (n) # joint max limit
+  q_min (n) # joint min limit
+
+  tau_prev (m) nonnegative
+  tau_max (m) nonnegative
+end
+
+variables
+  q[k] (n), k=1..T+1 # states
+  u[k] (m), k=0..T # input
+
+end
+
+minimize
+  sum[k=0..T](quad(q_goal[1]-q[k][1],Q1) + quad(q_goal[3]-q[k][3],Q2)) + sum[k=1..T](quad(u[k] - u[k-1], Q3)) + quad(u[0] - tau_prev, Q3) + quad(q_goal[1]-q[T+1][1],R1) + quad(q_goal[3]-q[T+1][3],R2) # + quad(q[k],R1)) # + quad(q_goal-q[T+1],R2)
+subject to
+  q[k+1] == A*q[k] + B*u[k], k=0..T # Dynamic constraint
+
+  #abs(u[k][1]) <= tau_max, k=0..T # max torque inputs
+
+  #abs(u[k][2]) <= tau_max, k=0..T # max torque inputs
+
+  #q[k] <= q_max, k=1..T
+  #q[k] >= q_min, k=1..T
+
+end
