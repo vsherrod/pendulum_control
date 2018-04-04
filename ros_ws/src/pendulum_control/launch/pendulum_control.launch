@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find rrbot_gazebo)/launch/rrbot_world.launch"/>
+  <node name="real_joint_state_publisher" pkg="pendulum_control" type="real_joint_state_publisher.py"/>
+</launch>
