@@ -1,4 +1,5 @@
 #include<boost/python.hpp> 
+#include<iostream>
 #include "solver.h" 
 
 Vars vars; 
@@ -36,55 +37,66 @@ boost::python::list runController(      // these are all the paramters that get 
   for (i = 0; i < boost::python::len(A); i++) 
     { 
       params.A[i] = boost::python::extract<double>(A[i]); 
+      std::cout << "params A " << params.A[i] << std::endl;
     } 
 
   
   for (i = 0; i < boost::python::len(B); i++) 
     { 
       params.B[i] = boost::python::extract<double>(B[i]); 
+      std::cout << "params B " << params.B[i] << std::endl;
     } 
 
 
   for (i = 0; i < boost::python::len(Q1); i++) 
     { 
       params.Q1[i] = boost::python::extract<double>(Q1[i]); 
+      std::cout << "params Q1 " << params.Q1[i] << std::endl;
     } 
 
   for (i = 0; i < boost::python::len(Q2); i++) 
     { 
       params.Q2[i] = boost::python::extract<double>(Q2[i]); 
+      std::cout << "params Q2 " << params.Q2[i] << std::endl;
     } 
 
   for (i = 0; i < boost::python::len(Q3); i++) 
     { 
       params.Q3[i] = boost::python::extract<double>(Q3[i]); 
+      std::cout << "params Q3 " << params.Q3[i] << std::endl;
     } 
 
   for (i = 0; i < boost::python::len(q_0); i++) 
     { 
       params.q_0[i] = boost::python::extract<double>(q_0[i]); 
+      std::cout << "params q_0 " << params.q_0[i] << std::endl;
     } 
 
 
   for (i = 0; i < boost::python::len(q_goal); i++) 
     { 
       params.q_goal[i] = boost::python::extract<double>(q_goal[i]); 
+      std::cout << "params q_goal " << params.q_goal[i] << std::endl;
     } 
 
   for (i = 0; i < boost::python::len(tau_prev); i++) 
     { 
       params.tau_prev[i] = boost::python::extract<double>(tau_prev[i]); 
+      std::cout << "params tau_prev " << params.tau_prev[i] << std::endl;
     } 
 
   for (i = 0; i < boost::python::len(R1); i++) 
     { 
       params.R1[i] = boost::python::extract<double>(R1[i]); 
+      std::cout << "params R1 " << params.R1[i] << std::endl;
     } 
 
   for (i = 0; i < boost::python::len(R2); i++) 
     { 
       params.R2[i] = boost::python::extract<double>(R2[i]); 
+      std::cout << "params R2 " << params.R2[i] << std::endl;
     } 
+
 
   solve(); 
 
@@ -95,6 +107,8 @@ boost::python::list runController(      // these are all the paramters that get 
 
   boost::python::list tau_1_cmd; 
   boost::python::list tau_2_cmd; 
+
+  std::cout << "Opt val: " << work.optval << std::endl;
 
   if (work.converged == 1) 
   { 
