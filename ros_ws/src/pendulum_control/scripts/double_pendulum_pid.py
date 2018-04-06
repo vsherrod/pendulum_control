@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import double_pendulum_controller as dpc
-import double_pendulum_mpc_solver as dpms
 import numpy as np
 import rospy
-import scipy.signal as ss
 
 class DoublePendulumPID(dpc.DoublePendulumController):
 
@@ -31,6 +29,7 @@ class DoublePendulumPID(dpc.DoublePendulumController):
         torque2 = self.kp*error2 - self.kd*x[3] + self.ki*self.integrator2
 
         torques = [torque1, torque2]
+
 
         print torques
 
