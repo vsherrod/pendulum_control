@@ -1,5 +1,6 @@
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Header
+import numpy as np
 import rospy
 import threading
 import pdb
@@ -19,9 +20,9 @@ class JointStateSubscriber:
         self.velocities = []
         self.efforts_ = []
         self.efforts = []
-        self.position = []
-        self.velocity = []
-        self.effort = []
+        self.position = 0.0
+        self.velocity = 0.0
+        self.effort = 0.0
 
         self.lock = threading.Lock()
 

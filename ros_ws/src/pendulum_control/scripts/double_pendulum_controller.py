@@ -18,23 +18,30 @@ class DoublePendulumController():
         self.rate = 50.0
         self.timestep = 1.0/self.rate
 
-        self.x_cmd = [np.pi/2.0, 0.0, np.pi/4.0, 0.0]
-
         self.torque_1_cmder = gtc.GazeboTorqueCommander(self.torque_service_name, "joint1", rospy.Duration.from_sec(self.timestep))
         self.torque_2_cmder = gtc.GazeboTorqueCommander(self.torque_service_name, "joint2", rospy.Duration.from_sec(self.timestep))
 
         self.joint_sub = jss.JointStateSubscriber()
+        self.joint_cmd_sub = jss.JointStateSubscriber("/joint_angle_cmds")
+
+        self.x_cmd = [np.pi/4.0, 0.0, 0.0, 0.0]
 
     def run(self):
 
         x = []
+        i = 0
 
         for joint in self.joints:
 
             self.joint_sub.getDataJoint(joint)
+            self.joint_cmd_sub.getDataJoint(joint)
 
             x.append(self.joint_sub.position)
             x.append(self.joint_sub.velocity)
+            self.x_cmd[2*i] = self.joint_cmd_sub.position
+            self.x_cmd[2*i+1] = self.joint_cmd_sub.velocity
+
+            i += 1
 
         #zeroing out the estimates
         x[0] = x[0] + np.pi

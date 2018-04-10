@@ -1,0 +1,8 @@
+publish_interval: 100
+settings:
+  /joint_angle_cmds/name[0]: {is_repeat: true, max: 0, min: 0}
+  /joint_angle_cmds/name[1]: {is_repeat: true, max: 0, min: 0}
+  /joint_angle_cmds/position[0]: {is_repeat: true, max: 3.14, min: -3.14}
+  /joint_angle_cmds/position[1]: {is_repeat: true, max: 3.14, min: -3.14}
+texts: ['/joint_angle_cmds/name[0]', '/joint_angle_cmds/position[0]', 
+  '/joint_angle_cmds/name[1]', '/joint_angle_cmds/position[1]']
