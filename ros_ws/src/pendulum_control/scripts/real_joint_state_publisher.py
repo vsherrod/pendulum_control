@@ -41,6 +41,11 @@ if __name__ == "__main__":
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
 
+        #zeroing out the estimates
+        if len(joint_state_msg.position) >= 2:
+            # joint_state_msg.position[0] += np.pi
+            joint_state_msg.position[1] -= 2.0*np.pi
+
         joint_state_pub.publish(joint_state_msg)
 
         rate.sleep()

@@ -44,8 +44,8 @@ class DoublePendulumController():
             i += 1
 
         #zeroing out the estimates
-        x[0] = x[0] + np.pi
-        x[2] = x[2] - 2.0*np.pi
+        # x[0] = x[0] + np.pi
+        # x[2] = x[2] - 2.0*np.pi
 
         torques = self.find_torques(x, self.x_cmd)
 
