@@ -33,17 +33,12 @@ class DoublePendulumMPC(dpc.DoublePendulumController):
         self.I1 = 1.0/12.0*self.m1*(self.l1**2 + self.w1**2)
         self.I2 = 1.0/12.0*self.m2*(self.l2**2 + self.w2**2)
 
-        self.M = np.array([[self.I1 + self.I2, self.I2],
-                           [self.I2, self.I2]])
-
-        self.M_inv = np.linalg.inv(self.M)
-
         self.Q1 = [0.002]
-        self.Q2 = [0.0002]
-        self.Q3 = [1000.0, 0.0, 0.0, 1000.0]
+        self.Q2 = [0.0002] #[0.0002]
+        self.Q3 = [0.001, 0.0, 0.0, 0.001]
 
-        self.R1 = [500.0]
-        self.R2 = [100.0]
+        self.R1 = [0.0]
+        self.R2 = [0.0]
 
         self.q_des_prev = [0.0, 0.0]
 
@@ -168,15 +163,27 @@ class DoublePendulumMPC(dpc.DoublePendulumController):
 
     def find_torques(self, x, x_cmd):
 
-        x_cmd = [np.pi/4.0, 0.0, -np.pi/4.0, 0.0]
+        # x_cmd = [0.0, 0.0, 0.0, 0.0]
 
-        error1 = x_cmd[0] - x[0]
-        error2 = x_cmd[2] - x[2]
+        # error1 = x_cmd[0] - x[0]
+        # error2 = x_cmd[2] - x[2]
 
-        k_error = [1.0*error1, 0.01*error2]
+        # k_error = [1.0*error1, 0.01*error2]
+        k_error = [0.0, 0.0]
 
-        Cor = np.array([[-0.5*self.m2*self.l1*self.l2*x[3]*np.sin(x[2]), -0.5*self.m2*self.l1*self.l2*np.cos(x[2])*(x[3] + x[1])],
-                        [0.5*self.m2*self.l1*self.l2*x[1]*np.sin(x[2]), 0.0]])
+        m11 = 0.25*self.m1*self.l1**2 + self.m2*(self.l1**2 + 0.25*self.l2**2 + self.l1*self.l2*np.cos(x[2])) + self.I1 + self.I2
+        m12 = self.m2*(0.25*self.l2**2 + 0.5*self.l1*self.l2*np.cos(x[2])) + self.I2
+        m22 = 0.25*self.m2*self.l2**2 + self.I2
+
+        self.M = np.array([[m11, m12],
+                           [m12, m22]])
+
+        self.M_inv = np.linalg.inv(self.M)
+
+        h = -0.5*self.m2*self.l1*self.l2*np.sin(x[2])
+
+        Cor = np.array([[h*x[3], h*(x[3] + x[1])],
+                        [-h*x[1], 0.0]])
 
         Tau_grav = np.array([-1.0*(0.5*self.m1*self.l1 + self.m2*self.l1)*self.g*np.sin(x[0]) - 0.5*self.m2*self.l2*self.g*np.sin(x[0] + x[2]),
                              -0.5*self.m2*self.l2*self.g*np.sin(x[0]+x[2])])
@@ -232,7 +239,22 @@ if __name__ == "__main__":
 
     rate = rospy.Rate(controller.rate)
 
+    first_time = 1
+
+    time_prev = rospy.Time.now()
+
     while not rospy.is_shutdown():
+
+        if not first_time:
+            time_now = rospy.Time.now()
+            step = time_now -time_prev
+            print "Hz: ", 1.0/step.to_sec()
+            time_prev = time_now
+
+        first_time = 0
+
+
+
 
         # controller.just_do_it()
         controller.run()
