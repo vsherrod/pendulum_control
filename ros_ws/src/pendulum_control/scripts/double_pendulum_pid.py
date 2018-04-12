@@ -5,13 +5,13 @@ import rospy
 
 class DoublePendulumPID(dpc.DoublePendulumController):
 
-    def __init__(self):
+    def __init__(self, kp, ki, kd):
 
         dpc.DoublePendulumController.__init__(self)
 
-        self.kp = 10.0
-        self.kd = 5.0
-        self.ki = 7.0
+        self.kp = kp
+        self.kd = kd
+        self.ki = ki
 
         self.integrator1 = 0.0
         self.integrator2 = 0.0
@@ -37,7 +37,11 @@ class DoublePendulumPID(dpc.DoublePendulumController):
 
 if __name__ == "__main__":
 
-    controller = DoublePendulumPID()
+    kp = 10.0
+    kd = 5.0
+    ki = 7.0
+
+    controller = DoublePendulumPID(kp, ki, kd)
 
     rospy.init_node('joint_controller', anonymous=True)
 
