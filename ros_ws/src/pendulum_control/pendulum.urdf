@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name = "double_pendulum">
+
+    <link name ="base_link">
+    </link>
+
+    <link name ="upper_link">
+    </link>
+
+    <link name ="lower_link">
+    </link>
+
+    <joint name ="upper_joint" type="revolute">
+        <parent link="base_link"/>
+        <child link="upper_link"/>
+    </joint>
+
+    <joint name ="lower_joint" type="revolute">
+        <parent link="upper_link"/>
+        <child link="lower_link"/>
+    </joint>
+
+</robot>
+
