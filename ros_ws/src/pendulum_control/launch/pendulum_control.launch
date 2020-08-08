@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="controller_type" value="mpc"/>
+  <arg name="controller_type" value="pid"/>
 
   <!-- <include file="$(find pendulum_control)/launch/robot.launch"/> -->
   <!-- <node name="$(arg controller_type)_controller" pkg="pendulum_control" type="double_pendulum_$(arg controller_type).py" output="screen"/> -->
-  <node name="commander" pkg="rqt_ez_publisher" type="rqt_ez_publisher" args="--slider-file $(find pendulum_control)/yaml/publish_cmds.yaml"/>
+  <!-- <node name="commander" pkg="rqt_ez_publisher" type="rqt_ez_publisher" args="slider-file $(find pendulum_control)/yaml/publish_cmds.yaml"/> -->
   <node name="joint1_plot" pkg="rqt_plot" type="rqt_plot" args="/joint_states/position[0] /joint_angle_cmds/position[0]"/>
   <node name="joint2_plot" pkg="rqt_plot" type="rqt_plot" args="/joint_states/position[1] /joint_angle_cmds/position[1]"/>
 </launch>
