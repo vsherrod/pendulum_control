@@ -18,6 +18,11 @@ class DoublePendulumMPC(dpc.DoublePendulumController):
         self.l1 = 1.0
         self.l2 = 1.0
 
+        axel_offset = 0.05
+
+        self.l1c = self.l1/2.0 - axel_offset
+        self.l2c = self.l2/2.0 - axel_offset
+
         self.w1 = 0.1
         self.w2 = 0.1
 
@@ -171,22 +176,22 @@ class DoublePendulumMPC(dpc.DoublePendulumController):
         # k_error = [1.0*error1, 0.01*error2]
         k_error = [0.0, 0.0]
 
-        m11 = 0.25*self.m1*self.l1**2 + self.m2*(self.l1**2 + 0.25*self.l2**2 + self.l1*self.l2*np.cos(x[2])) + self.I1 + self.I2
-        m12 = self.m2*(0.25*self.l2**2 + 0.5*self.l1*self.l2*np.cos(x[2])) + self.I2
-        m22 = 0.25*self.m2*self.l2**2 + self.I2
+        m11 = self.m1*self.l1c**2 + self.m2*(self.l1**2 + self.l2c**2 + 2*self.l1*self.l2c*np.cos(x[2])) + self.I1 + self.I2
+        m12 = self.m2*(self.l2c**2 + self.l1*self.l2c*np.cos(x[2])) + self.I2
+        m22 = self.m2*self.l2c**2 + self.I2
 
         self.M = np.array([[m11, m12],
                            [m12, m22]])
 
         self.M_inv = np.linalg.inv(self.M)
 
-        h = -0.5*self.m2*self.l1*self.l2*np.sin(x[2])
+        h = -self.m2*self.l1*self.l2c*np.sin(x[2])
 
         Cor = np.array([[h*x[3], h*(x[3] + x[1])],
                         [-h*x[1], 0.0]])
 
-        Tau_grav = np.array([-1.0*(0.5*self.m1*self.l1 + self.m2*self.l1)*self.g*np.sin(x[0]) - 0.5*self.m2*self.l2*self.g*np.sin(x[0] + x[2]),
-                             -0.5*self.m2*self.l2*self.g*np.sin(x[0]+x[2])])
+        Tau_grav = np.array([-1.0*(self.m1*self.l1c + self.m2*self.l1)*self.g*np.sin(x[0]) - self.m2*self.l2c*self.g*np.sin(x[0] + x[2]),
+                             -self.m2*self.l2c*self.g*np.sin(x[0]+x[2])])
 
         a = np.dot(self.M_inv, -1.0*Cor-self.b-self.kd)
 
@@ -219,13 +224,13 @@ class DoublePendulumMPC(dpc.DoublePendulumController):
 
         self.q_des_prev = dpms.runController(Ad, Bd, self.Q1, self.Q2, self.Q3, self.R1, self.R2, x, x_cmd, self.q_des_prev, k_error)
 
-        print "q_des: ", self.q_des_prev
+        # print "q_des: ", self.q_des_prev
 
         x_cmd_pid = [self.q_des_prev[0], 0.0, self.q_des_prev[1], 0.0]
 
         tau_tilde = np.array(self.pid_controller.find_torques(x, x_cmd_pid))
 
-        torques = tau_tilde #+ Tau_grav
+        torques = tau_tilde # + Tau_grav
 
         return torques
 
@@ -245,13 +250,13 @@ if __name__ == "__main__":
 
     while not rospy.is_shutdown():
 
-        if not first_time:
-            time_now = rospy.Time.now()
-            step = time_now -time_prev
-            print "Hz: ", 1.0/step.to_sec()
-            time_prev = time_now
+        # if not first_time:
+        #     time_now = rospy.Time.now()
+        #     step = time_now -time_prev
+        #     print "Hz: ", 1.0/step.to_sec()
+        #     time_prev = time_now
 
-        first_time = 0
+        # first_time = 0
 
 
 
