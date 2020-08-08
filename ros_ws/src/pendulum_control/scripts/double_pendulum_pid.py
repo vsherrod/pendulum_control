@@ -31,15 +31,20 @@ class DoublePendulumPID(dpc.DoublePendulumController):
         torques = [torque1, torque2]
 
 
-        print torques
+        if torque1 > 100.0 or torque2 > 100.0:
+            print torques
 
         return torques
 
 if __name__ == "__main__":
 
+    # kp = 10.0
+    # kd = 5.0
+    # ki = 7.0
+
     kp = 10.0
-    kd = 5.0
-    ki = 7.0
+    kd = 3.0
+    ki = 0.0
 
     controller = DoublePendulumPID(kp, ki, kd)
 
